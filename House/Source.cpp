@@ -54,6 +54,26 @@ private:
 	double _square;
 };
 
+class House
+{
+public:
+	House();//constructor default
+	House(Apartment apartment, string index);//constructor with params
+	House(const House& initial);//copy constructor
+	~House();//distructor
+	void DisplayHouse();
+	void AddApartment(Apartment apartnent_new);
+	//Setters
+	void SetIndex();
+	//Getters
+	string GetIndex();
+	int GetQuantity_apartments();
+private:
+	string _index;
+	int _quantity_apartments;
+	Apartment* _apartments;
+};
+
 int main()
 {
 	setlocale(LC_CTYPE, "ru");
@@ -73,10 +93,10 @@ int main()
 	Apartment apartment2(person1, 3, 57.5);
 	Apartment apartment3(2, 46.1);
 	Apartment apartment4(apartment3);
-	apartment1.DisplayApartment();
-	apartment2.DisplayApartment();
-	apartment3.DisplayApartment();
-	apartment4.DisplayApartment();
+	//apartment1.DisplayApartment();
+	//apartment2.DisplayApartment();
+	//apartment3.DisplayApartment();
+	//apartment4.DisplayApartment();
 	system("pause");
 	return 0;
 }
@@ -270,3 +290,23 @@ int Apartment::GetRooms() { return _rooms; }
 double Apartment::GetSquare() { return _square; }
 
 int Apartment::GetResidents(){return _quantity_residents;}
+
+House::House()
+{
+	_index = "";
+	_quantity_apartments = 0;
+	_apartments = nullptr;
+}
+
+House::House(Apartment apartment, string index)
+{
+	_index = index;
+	_quantity_apartments = 1;
+	_apartments = new Apartment[_quantity_apartments];
+	_apartments[0] = apartment;
+}
+
+House::~House()
+{
+	if (_apartments != nullptr) delete[]_apartments;
+}
