@@ -58,9 +58,9 @@ int main()
 {
 	setlocale(LC_CTYPE, "ru");
 	Person person1("Marry", "Dobby", 21);
-	/*person1.SetName();
+	person1.SetName();
 	person1.SetSurname();
-	person1.SetAge();*/
+	person1.SetAge();
 	Person person2("Alex", "Smit", 25);
 	Person person3(person1);
 	/*person1.DisplayPerson();
@@ -121,14 +121,15 @@ void Person::DisplayPerson()
 
 void Person::SetName()
 {
-	/*gets_s(_name);
-	cin.ignore();*/
+	cin >> _name;
+	cin.ignore();
 }
 
 void Person::SetSurname()
 {
-	/*gets_s(_surname, _size);
-	cin.ignore();*/
+	cin >> _surname;
+	cin.ignore();
+	
 }
 
 void Person::SetAge()
