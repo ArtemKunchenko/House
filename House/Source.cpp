@@ -1,5 +1,6 @@
 /*Create a program simulating an apartment building.It is necessary to have classes «Person», «Apartment», «House».Class «Apartment» contains a dynamic array of objects of class «Person».Class «House» contains an array of objects of class «Apartment».Each class contains the member variablesand member functions that are required for the class domain.Please note that memory is dynamically allocated to string values.For example, for name in class «Human».Do not forget to provide classes with different constructors(copy constructor is required), destructors.In main, test the work of the received set of classes.*/
 #include<iostream>
+#include<string>;
 using namespace std;
 
 class Person
@@ -18,12 +19,12 @@ public:
 	void SetSurname(const char* surname);
 	void SetAge(int age);
 	//Getters
-	char* GetName();
-	char* GetSurname();
+	string GetName();
+	string GetSurname();
 	int GetAge();
 private:
-	char* _name;
-	char* _surname;
+	string _name;
+	string _surname;
 	int _age;
 	int _size;
 };
@@ -55,6 +56,7 @@ private:
 
 int main()
 {
+	setlocale(LC_CTYPE, "ru");
 	Person person1("Marry", "Dobby", 21);
 	/*person1.SetName();
 	person1.SetSurname();
@@ -67,7 +69,7 @@ int main()
 	/*person3.DisplayPerson();*/
 	Apartment apartment1;
 	apartment1.AddResident(person2);
-	//apartment1.AddResident(person3);
+	apartment1.AddResident(person3);
 	Apartment apartment2(person1, 3, 57.5);
 	Apartment apartment3(2, 46.1);
 	Apartment apartment4(apartment3);
@@ -82,109 +84,51 @@ int main()
 Person::Person()
 {
 	_age = 0;
-	_size = 50;
-	_name = new char[_size];
-	_surname = new char[_size];
-	if (_name == NULL || _surname == NULL)
-	{
-		cout << "Error\n";
-		exit(-1);
-	}
-	_name[0] = { '\0' };
-	_surname[0] = { '\0' };
+	_size = 20;
+	_name = "";
+	_surname = "";
 
 }
 
 Person::Person(const char* name, const char* surname, int age)
 {
 	_age = age;
-	_size = 50;
-	_name = new char[_size];
-	_surname = new char[_size];
-	if (_name == NULL || _surname == NULL)
-	{
-		cout << "Error\n";
-		exit(-1);
-	}
-	for (int i = 0; ; i++)
-	{
-		if (name[i] == '\0')
-		{
-			_name[i] = name[i];
-			break;
-		}
-		_name[i] = name[i];
-	}
-	for (int i = 0; ; i++)
-	{
-		if (surname[i] == '\0')
-		{
-			_surname[i] = surname[i];
-			break;
-		}
-		_surname[i] = surname[i];
-	}
-
+	_size = 20;
+	_name = name;
+	_surname = surname;
 }
 
 Person::Person(const Person& initial)
 {
 	this->_size = initial._size;
 	this->_age = initial._age;
-	this->_name = new char[_size];
-	this->_surname = new char[_size];
-	if (_name == NULL || _surname == NULL)
-	{
-		cout << "Error\n";
-		exit(-1);
-	}
-	for (int i = 0; i < _size; i++)
-	{
-		this->_name[i] = initial._name[i];
-	}
-	for (int i = 0; i < _size; i++)
-	{
-		this->_surname[i] = initial._surname[i];
-	}
+	this->_name = initial._name;
+	this->_surname = initial._surname;
+	
 }
 
-Person::~Person()
-{
-	delete[]_name;
-	delete[]_surname;
-}
+Person::~Person(){}
+
 
 void Person::DisplayPerson()
 {
 	cout << "____________________________________\n";
 	cout << "Name: " << GetName() << endl;
-	/*cout << "Name: ";
-	for (int i = 0; _name[i]!='\0'; i++)
-	{
-		cout << _name[i];
-	}
-	cout << endl;*/
 	cout << "Surname: " << GetSurname() << endl;
-	/*cout << "Surname: ";
-	for (int i = 0; _surname[i] != '\0'; i++)
-	{
-		cout << _surname[i];
-	}*/
-	cout << endl;
 	cout << "Age: " << GetAge() << endl;
 	cout << "____________________________________\n";
 }
 
 void Person::SetName()
 {
-	gets_s(_name, _size);
-	cin.ignore();
+	/*gets_s(_name);
+	cin.ignore();*/
 }
 
 void Person::SetSurname()
 {
-	gets_s(_surname, _size);
-	cin.ignore();
+	/*gets_s(_surname, _size);
+	cin.ignore();*/
 }
 
 void Person::SetAge()
@@ -193,37 +137,14 @@ void Person::SetAge()
 	cin.ignore();
 }
 
-void Person::SetName(const char* name)
-{
-	for (int i = 0; ; i++)
-	{
-		if (name[i] == '\0')
-		{
-			_name[i] = name[i];
-			break;
-		}
-		_name[i] = name[i];
-	}
-}
+void Person::SetName(const char* name){_name = name;}
 
-void Person::SetSurname(const char* surname)
-{
-	for (int i = 0; ; i++)
-	{
-		if (surname[i] == '\0')
-		{
-			_surname[i] = surname[i];
-			break;
-		}
-		_surname[i] = surname[i];
-	}
-}
+void Person::SetSurname(const char* surname) { _surname = surname; }
 
 void Person::SetAge(int age) { _age = age; }
 
-char* Person::GetName() { return _name; }
-
-char* Person::GetSurname() { return _surname; }
+string Person::GetName() { return _name; }
+string Person::GetSurname() { return _surname; }
 
 int Person::GetAge() { return _age; }
 
@@ -296,7 +217,7 @@ void Apartment::DisplayApartment()
 	{
 		for (int i = 0; i < _quantity_residents; i++)
 		{
-			_residents[i].DisplayPerson();
+			cout << _residents[i].GetName() << " " << _residents[i].GetSurname() << " - " << _residents[i].GetAge() << " years\n";
 		}
 
 	}
@@ -311,6 +232,7 @@ void Apartment::AddResident(Person resident_new)
 {
 	if (_quantity_residents != 0)
 	{
+	
 		Person* tempResident = new Person[_quantity_residents];
 		for (int i = 0; i < _quantity_residents; i++)
 			tempResident[i] = _residents[i];
@@ -328,14 +250,14 @@ void Apartment::AddResident(Person resident_new)
 	{
 		_quantity_residents++;
 		_residents = new Person[_quantity_residents];
-		/*if (_residents == NULL)
+		if (_residents == NULL)
 		{
 			cout << "Error\n";
 			exit(-1);
-		}*/
+		}
 		_residents[0] = resident_new;
 	}
-
+	
 }
 
 void Apartment::SetRooms() { cin >> _rooms; }
