@@ -42,6 +42,8 @@ public:
 	//Setters
 	void SetRooms();
 	void SetSquare();
+	void SetRooms(int rooms);
+	void SetSquare(double square);
 	//Getters
 	int GetRooms();
 	double GetSquare();
@@ -58,19 +60,22 @@ class House
 {
 public:
 	House();//constructor default
-	House(Apartment apartment, string index);//constructor with params
+	House(Apartment apartment, int quantity_apartments, string index);//constructor with params
 	House(const House& initial);//copy constructor
 	~House();//distructor
 	void DisplayHouse();
-	void AddApartment(Apartment apartnent_new);
+	void AddApartment(Apartment apartment_new, int apartments_number);
 	//Setters
 	void SetIndex();
+	void SetQuantity_apartments(int quantity_apartments);
+	void SetIndex(string index);
 	//Getters
 	string GetIndex();
 	int GetQuantity_apartments();
 private:
 	string _index;
 	int _quantity_apartments;
+	int _apartments_number;
 	Apartment* _apartments;
 };
 
@@ -78,9 +83,9 @@ int main()
 {
 	setlocale(LC_CTYPE, "ru");
 	Person person1("Marry", "Dobby", 21);
-	person1.SetName();
+	/*person1.SetName();
 	person1.SetSurname();
-	person1.SetAge();
+	person1.SetAge();*/
 	Person person2("Alex", "Smit", 25);
 	Person person3(person1);
 	/*person1.DisplayPerson();
@@ -93,10 +98,18 @@ int main()
 	Apartment apartment2(person1, 3, 57.5);
 	Apartment apartment3(2, 46.1);
 	Apartment apartment4(apartment3);
-	//apartment1.DisplayApartment();
-	//apartment2.DisplayApartment();
-	//apartment3.DisplayApartment();
-	//apartment4.DisplayApartment();
+		House house1(apartment1, 4, "8b");
+	house1.AddApartment(apartment2, 2);
+	house1.AddApartment(apartment3, 4);
+	house1.AddApartment(apartment4, 4);
+	House house2(house1);
+	apartment1.DisplayApartment();
+	cout << endl;
+	apartment2.DisplayApartment();
+	cout << endl;
+	apartment3.DisplayApartment();
+	cout << endl;
+	apartment4.DisplayApartment();
 	system("pause");
 	return 0;
 }
@@ -285,6 +298,10 @@ void Apartment::SetRooms() { cin >> _rooms; }
 
 void Apartment::SetSquare() { cin >> _square; }
 
+void Apartment::SetRooms(int rooms) { _rooms = rooms; }
+
+void Apartment::SetSquare(double square) { _square = square; }
+
 int Apartment::GetRooms() { return _rooms; }
 
 double Apartment::GetSquare() { return _square; }
@@ -298,15 +315,79 @@ House::House()
 	_apartments = nullptr;
 }
 
-House::House(Apartment apartment, string index)
+House::House(Apartment apartment, int quantity_apartments, string index)
 {
 	_index = index;
-	_quantity_apartments = 1;
+	_quantity_apartments = quantity_apartments;
 	_apartments = new Apartment[_quantity_apartments];
 	_apartments[0] = apartment;
+}
+
+House::House(const House& initial)
+{
+
+	if (initial._quantity_apartments == 0)
+	{
+		this->_index = initial._index;
+		this->_quantity_apartments = initial._quantity_apartments;
+		this->_apartments = nullptr;
+	}
+	else
+	{
+		this->_index = initial._index;
+		this->_quantity_apartments = initial._quantity_apartments;
+		this->_apartments = new Apartment[_quantity_apartments];
+		if (_apartments == NULL)
+		{
+			cout << "Error\n";
+			exit(-1);
+		}
+		for (int i = 0; i < _quantity_apartments; i++)
+		{
+			_apartments[i] = initial._apartments[i];
+		}
+	}
 }
 
 House::~House()
 {
 	if (_apartments != nullptr) delete[]_apartments;
 }
+
+void House::DisplayHouse()
+{
+	cout << "House number " << GetIndex() << endl;
+	for (int i = 0; i < _quantity_apartments; i++)
+	{
+		_apartments[i].DisplayApartment();
+		cout << endl;
+	}
+}
+
+void House::AddApartment(Apartment apartment_new, int apartments_number)
+{
+	if (apartments_number <= _quantity_apartments && apartments_number >= 1)
+	{
+		_apartments[apartments_number - 1] = apartment_new;
+	}
+	else cout << "House doesn't have apartment number " << apartments_number << endl;
+
+}
+
+void House::SetIndex()
+{
+	cin >> _index;
+	cin.ignore();
+}
+
+void House::SetQuantity_apartments(int quantity_apartments)
+{
+	_quantity_apartments = quantity_apartments;
+	_apartments = new Apartment[_quantity_apartments];
+}
+
+void House::SetIndex(string index) { _index = index; }
+
+string House::GetIndex(){return _index;}
+
+int House::GetQuantity_apartments(){return _quantity_apartments;}
