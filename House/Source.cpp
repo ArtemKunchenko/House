@@ -14,7 +14,7 @@ public:
 	void SetName();//after inputing name push "Enter" 2 times
 	void SetSurname();//after inputing surname push "Enter" 2 times
 	void SetAge();//after inputing age push "Enter" 2 times
-	void SetName(const char*name);
+	void SetName(const char* name);
 	void SetSurname(const char* surname);
 	void SetAge(int age);
 	//Getters
@@ -28,9 +28,34 @@ private:
 	int _size;
 };
 
+class Apartment
+{
+public:
+	Apartment();//constructor default
+	Apartment(Person resident, int rooms, double square);//constructor with params
+	Apartment(int rooms, double square);//constructor with params
+	Apartment(const Apartment& initial);//copy constructor
+	~Apartment();//distructor
+	void DisplayApartment();
+	void AddResident(Person resident_new);
+	//Setters
+	void SetRooms();
+	void SetSquare();
+	//Getters
+	int GetRooms();
+	double GetSquare();
+	int GetResidents();
+
+private:
+	Person* _residents;
+	int _quantity_residents;
+	int _rooms;
+	double _square;
+};
+
 int main()
 {
-	Person person1("Marry","Dobby", 21);
+	Person person1("Marry", "Dobby", 21);
 	/*person1.SetName();
 	person1.SetSurname();
 	person1.SetAge();*/
@@ -40,6 +65,16 @@ int main()
 	person2.DisplayPerson();*/
 	person3.SetName("Peg");
 	/*person3.DisplayPerson();*/
+	Apartment apartment1;
+	apartment1.AddResident(person2);
+	//apartment1.AddResident(person3);
+	Apartment apartment2(person1, 3, 57.5);
+	Apartment apartment3(2, 46.1);
+	Apartment apartment4(apartment3);
+	apartment1.DisplayApartment();
+	apartment2.DisplayApartment();
+	apartment3.DisplayApartment();
+	apartment4.DisplayApartment();
 	system("pause");
 	return 0;
 }
@@ -50,18 +85,18 @@ Person::Person()
 	_size = 50;
 	_name = new char[_size];
 	_surname = new char[_size];
-	if (_name == NULL|| _surname == NULL)
+	if (_name == NULL || _surname == NULL)
 	{
 		cout << "Error\n";
 		exit(-1);
 	}
 	_name[0] = { '\0' };
 	_surname[0] = { '\0' };
-	
+
 }
 
 Person::Person(const char* name, const char* surname, int age)
-{	
+{
 	_age = age;
 	_size = 50;
 	_name = new char[_size];
@@ -123,7 +158,19 @@ void Person::DisplayPerson()
 {
 	cout << "____________________________________\n";
 	cout << "Name: " << GetName() << endl;
+	/*cout << "Name: ";
+	for (int i = 0; _name[i]!='\0'; i++)
+	{
+		cout << _name[i];
+	}
+	cout << endl;*/
 	cout << "Surname: " << GetSurname() << endl;
+	/*cout << "Surname: ";
+	for (int i = 0; _surname[i] != '\0'; i++)
+	{
+		cout << _surname[i];
+	}*/
+	cout << endl;
 	cout << "Age: " << GetAge() << endl;
 	cout << "____________________________________\n";
 }
@@ -174,8 +221,129 @@ void Person::SetSurname(const char* surname)
 
 void Person::SetAge(int age) { _age = age; }
 
-char* Person::GetName(){return _name;}
+char* Person::GetName() { return _name; }
 
-char* Person::GetSurname(){return _surname;}
+char* Person::GetSurname() { return _surname; }
 
-int Person::GetAge(){return _age;}
+int Person::GetAge() { return _age; }
+
+Apartment::Apartment()
+{
+	_residents = nullptr;
+	_quantity_residents = 0;
+	_rooms = 0;
+	_square = 0;
+}
+
+Apartment::Apartment(Person resident, int rooms, double square)
+{
+	_rooms = rooms;
+	_square = square;
+	_quantity_residents = 1;
+	_residents = new Person[_quantity_residents];
+	if (_residents == NULL)
+	{
+		cout << "Error\n";
+		exit(-1);
+	}
+	_residents[0] = resident;
+}
+
+Apartment::Apartment(int rooms, double square)
+{
+	_rooms = rooms;
+	_square = square;
+	_quantity_residents = 0;
+	_residents = nullptr;
+}
+
+Apartment::Apartment(const Apartment& initial)
+{
+	if (initial._quantity_residents == 0)
+	{
+		this->_rooms = initial._rooms;
+		this->_square = initial._square;
+		this->_quantity_residents = initial._quantity_residents;
+		this->_residents = nullptr;
+	}
+	else
+	{
+		this->_rooms = initial._rooms;
+		this->_square = initial._square;
+		this->_quantity_residents = initial._quantity_residents;
+		this->_residents = new Person[_quantity_residents];
+		if (_residents == NULL)
+		{
+			cout << "Error\n";
+			exit(-1);
+		}
+		for (int i = 0; i < _quantity_residents; i++)
+		{
+			_residents[i] = initial._residents[i];
+		}
+	}
+}
+
+Apartment::~Apartment()
+{
+	if (_residents != nullptr) delete[]_residents;
+}
+
+void Apartment::DisplayApartment()
+{
+	cout << "Rooms: " << GetRooms() << "\tSquare: " << GetSquare() <<"\tResidents: " << GetResidents()<<endl;
+	if (_quantity_residents != 0)
+	{
+		for (int i = 0; i < _quantity_residents; i++)
+		{
+			_residents[i].DisplayPerson();
+		}
+
+	}
+	else
+	{
+		cout << "Apartment is empty\n";
+	}
+
+}
+
+void Apartment::AddResident(Person resident_new)
+{
+	if (_quantity_residents != 0)
+	{
+		Person* tempResident = new Person[_quantity_residents];
+		for (int i = 0; i < _quantity_residents; i++)
+			tempResident[i] = _residents[i];
+		if (_residents != nullptr)
+			delete[] _residents;
+		_residents = new Person[_quantity_residents + 1];
+		for (int i = 0; i < _quantity_residents; i++)
+			_residents[i] = tempResident[i];
+		_residents[_quantity_residents] = resident_new;
+		_quantity_residents++;
+		delete[] tempResident;
+
+	}
+	else
+	{
+		_quantity_residents++;
+		_residents = new Person[_quantity_residents];
+		/*if (_residents == NULL)
+		{
+			cout << "Error\n";
+			exit(-1);
+		}*/
+		_residents[0] = resident_new;
+	}
+
+}
+
+void Apartment::SetRooms() { cin >> _rooms; }
+
+void Apartment::SetSquare() { cin >> _square; }
+
+int Apartment::GetRooms() { return _rooms; }
+
+double Apartment::GetSquare() { return _square; }
+
+int Apartment::GetResidents(){return _quantity_residents;}
